@@ -36,6 +36,8 @@ dependencies:
   cupertino_icons: ^1.0.8
   arkit_plugin: ^1.2.1
   uuid: ^4.4.2
+  http: ^1.6.0
+  get_it: ^9.2.0
 
 dev_dependencies:
   flutter_test:

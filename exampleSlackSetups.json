@@ -1,0 +1,58 @@
+[
+  {
+    "name": "Flat line setup 10m",
+    "description": "Basic setup with BC blue slackline at dorethea dix park. Great for beginners and super easy to set up.",
+    "length": "10m",
+    "type": "flat webbing",
+    "difficulty": "Beginner"
+  },
+  {
+    "name": "Flat line setup 15m - beginner",
+    "description": "15m flat webbing anchored between two trees with basic tree protection. Good for first-time setup and walking practice.",
+    "length": "15m",
+    "type": "flat webbing",
+    "difficulty": "Beginner"
+  },
+  {
+    "name": "Lowline 8m - beginner/intermediate",
+    "description": "8m slightly tensioned lowline (low to the ground) using tubular webbing. Easier to fall onto grass; suitable for confidence building.",
+    "length": "8m",
+    "type": "tubular webbing / lowline",
+    "difficulty": "Beginner/Intermediate"
+  },
+  {
+    "name": "Trickline 12m - intermediate",
+    "description": "12m trickline with medium tension for bounces and tricks; requires reliable ratchets and slackline-specific webbing. Intermediate setup: practice dynamic moves.",
+    "length": "12m",
+    "type": "trickline (dynamic)",
+    "difficulty": "Intermediate"
+  },
+  {
+    "name": "Classic 25m - intermediate",
+    "description": "25m flat webbing setup at moderate tension. Needs good tree protection and stronger anchors; perfect for longer walks and flow.",
+    "length": "25m",
+    "type": "flat webbing",
+    "difficulty": "Intermediate"
+  },
+  {
+    "name": "Longline 50m - advanced",
+    "description": "50m longline that requires backup lines, redundant anchors, and pulley/tensioning systems. High tension and significant sag make rigging complex.",
+    "length": "50m",
+    "type": "longline (backup & pulley)",
+    "difficulty": "Advanced"
+  },
+  {
+    "name": "Highline 20m - advanced",
+    "description": "20m highline setup with full safety backup, leashes, and anchors. Requires experience with knotwork, anchors, and belay systems—advanced safety-critical rigging.",
+    "length": "20m",
+    "type": "highline (with backup)",
+    "difficulty": "Advanced"
+  },
+  {
+    "name": "Gap line 6m - intermediate",
+    "description": "6m gap line between two short trees or platforms; moderate tension and precise anchor placement required for consistent bounce and safety.",
+    "length": "6m",
+    "type": "gap / tensioned flat",
+    "difficulty": "Intermediate"
+  }
+]

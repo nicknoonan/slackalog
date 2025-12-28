@@ -1,75 +1,49 @@
-import 'package:slackalog/manipulation_page.dart';
-
-import './measure_page.dart';
+import 'package:slackalog/apiClient.dart';
+import 'package:slackalog/layout.dart';
+import 'package:slackalog/measurePage.dart';
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
+import 'package:slackalog/slackSetupRepository.dart';
 
-void main() => runApp(MaterialApp(home: MyApp()));
+final getIt = GetIt.instance;
 
-class MyApp extends StatelessWidget {
+void main() {
+  configureDependencies();
+  runApp(
+    MaterialApp(
+      home: MyApp(),
+      theme: ThemeData.from(
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+      ),
+    ),
+  );
+}
+
+void configureDependencies() {
+  // Dependency injection setup can be added here
+  getIt.registerSingleton<IAPIClient>(APIClient(baseUrl: "https://localhost"));
+  getIt.registerLazySingleton<ISlackSetupRepository>(
+    () => SlackSetupRepository(apiClient: getIt<IAPIClient>()),
+  );
+}
+
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final samples = [
-      Sample(
-        'Measure',
-        'Measures distances',
-        Icons.linear_scale,
-        () => Navigator.of(context)
-            .push<void>(MaterialPageRoute(builder: (c) => MeasurePage())),
-      ),
-      Sample(
-        'manipulation',
-        'manipulates objects',
-        Icons.linear_scale,
-        () => Navigator.of(context)
-            .push<void>(MaterialPageRoute(builder: (c) => ManipulationPage())),
-      ),
-      
-    ];
-
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('ARKit Demo'),
-      ),
-      body:
-          ListView(children: samples.map((s) => SampleItem(item: s)).toList()),
-    );
-  }
+  State<MyApp> createState() => _MyAppState();
 }
 
-class SampleItem extends StatelessWidget {
-  const SampleItem({
-    required this.item,
-    super.key,
-  });
-  final Sample item;
+class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      child: InkWell(
-        onTap: () => item.onTap(),
-        child: ListTile(
-          leading: Icon(item.icon),
-          title: Text(
-            item.title,
-            style: Theme.of(context).textTheme.titleMedium,
-          ),
-          subtitle: Text(
-            item.description,
-            style: Theme.of(context).textTheme.titleSmall,
-          ),
-        ),
-      ),
-    );
-  }
-}
+    final List<NavItem> navItems = <NavItem>[
+      NavItem(label: "ARTest", icon: Icons.camera, body: MeasurePage()),
+      NavItem(label: "home", icon: Icons.home, body: Text("not implemented")),
+      NavItem(label: "map", icon: Icons.map, body: Text("not implemented")),
+    ];
 
-class Sample {
-  const Sample(this.title, this.description, this.icon, this.onTap);
-  final String title;
-  final String description;
-  final IconData icon;
-  final Function onTap;
+    return AppLayout(title: "Slackalog", navItems: navItems);
+  }
 }

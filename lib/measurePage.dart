@@ -5,6 +5,8 @@ import 'package:collection/collection.dart';
 import 'package:uuid/uuid.dart';
 
 class MeasurePage extends StatefulWidget {
+  // final void Function(String) onTitleChanged;
+
   const MeasurePage({super.key});
 
   @override
@@ -25,34 +27,45 @@ class _MeasurePageState extends State<MeasurePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(title()),
-      ),
-      body: ARKitSceneView(
-        enableTapRecognizer: true,
-        onARKitViewCreated: onARKitViewCreated,
-      ),
-      floatingActionButton: floatingActionButtons(),
+    return Stack(
+      alignment: AlignmentDirectional.bottomEnd,
+      children: [
+        ARKitSceneView(
+          enableTapRecognizer: true,
+          onARKitViewCreated: onARKitViewCreated,
+        ),
+        floatingActionButtons(nodeNameStack.isEmpty)
+      ]
     );
+    // return Scaffold(
+    //   appBar: AppBar(
+    //     title: Text(title()),
+    //   ),
+    //   body: ARKitSceneView(
+    //     enableTapRecognizer: true,
+    //     onARKitViewCreated: onARKitViewCreated,
+    //   ),
+    //   floatingActionButton: floatingActionButtons(),
+    // );
   }
 
-  Widget floatingActionButtons() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.end, // Aligns buttons to the right
-      children: [
-        // FloatingActionButton(
-        //   onPressed: nodeNameStack.isNotEmpty ? clearNodes : null,
-        //   heroTag: 'clearNodes', // Unique tag
-        //   child: Icon(Icons.delete),
-        // ),
-        // SizedBox(width: 10),
-        FloatingActionButton(
-          onPressed: nodeNameStack.isNotEmpty ? popNodes : null,
-          heroTag: 'popNodes', // Unique tag
-          child: Icon(Icons.undo),
-        ),
-      ],
+  Widget floatingActionButtons(bool isEmpty) {
+    return Padding(
+      padding: const EdgeInsets.all(10.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.end, // Aligns buttons to the right
+        spacing: 2,
+        children: [
+          IconButton.filled(
+            onPressed: isEmpty ? null : clearNodes,
+            icon: Icon(Icons.delete),
+          ),
+          IconButton.filled(
+            onPressed: isEmpty ? null : popNodes,
+            icon: Icon(Icons.undo),
+          ),
+        ],
+      )
     );
   }
 
@@ -96,16 +109,18 @@ class _MeasurePageState extends State<MeasurePage> {
     }
   }
 
-  String title() {
+  void setTitle() {
+    String title;
     if (startPosition == null && endPosition == null) {
-      return 'tap to measure distance';
+      title = 'tap to measure distance';
     }
     else if (startPosition != null && endPosition == null) {
-      return 'tap again set end position';
+      title = 'tap again set end position';
     }
     else {
-      return _calculateDistanceBetweenPoints(startPosition!, endPosition!);
+      title = _calculateDistanceBetweenPoints(startPosition!, endPosition!);
     }
+    // widget.onTitleChanged(title);
   }
 
   ARKitNode createThickLine(vector.Vector3 from, vector.Vector3 to, double thickness, ARKitMaterial material) {
