@@ -39,7 +39,7 @@ class ExampleSlackSetupRepository implements ISlackSetupRepository {
 
   Future<List<SlackSetupModel>> _getSlackSetups() async {
     var getSlackSetupResponse = await apiClient.get(
-      "/exampleSlackSetups1.json",
+      "/exampleSlackSetups.json",
     );
     getSlackSetupResponse = getSlackSetupResponse as List<dynamic>;
 
