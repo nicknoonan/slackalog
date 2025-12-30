@@ -27,26 +27,19 @@ class _MeasurePageState extends State<MeasurePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      alignment: AlignmentDirectional.bottomEnd,
-      children: [
-        ARKitSceneView(
-          enableTapRecognizer: true,
-          onARKitViewCreated: onARKitViewCreated,
-        ),
-        floatingActionButtons(nodeNameStack.isEmpty)
-      ]
+    return Scaffold(
+      appBar: AppBar(title: Text('Measure Page')),
+      body: Stack(
+        alignment: AlignmentDirectional.bottomEnd,
+        children: [
+          ARKitSceneView(
+            enableTapRecognizer: true,
+            onARKitViewCreated: onARKitViewCreated,
+          ),
+          floatingActionButtons(nodeNameStack.isEmpty),
+        ],
+      ),
     );
-    // return Scaffold(
-    //   appBar: AppBar(
-    //     title: Text(title()),
-    //   ),
-    //   body: ARKitSceneView(
-    //     enableTapRecognizer: true,
-    //     onARKitViewCreated: onARKitViewCreated,
-    //   ),
-    //   floatingActionButton: floatingActionButtons(),
-    // );
   }
 
   Widget floatingActionButtons(bool isEmpty) {
@@ -65,7 +58,7 @@ class _MeasurePageState extends State<MeasurePage> {
             icon: Icon(Icons.undo),
           ),
         ],
-      )
+      ),
     );
   }
 
@@ -83,7 +76,7 @@ class _MeasurePageState extends State<MeasurePage> {
 
   void pushNodes(List<ARKitNode> nodes) {
     for (var node in nodes) {
-      arkitController.add(node);  
+      arkitController.add(node);
     }
     nodeNameStack.add(nodes.map((node) => node.name).toList());
   }
@@ -113,17 +106,20 @@ class _MeasurePageState extends State<MeasurePage> {
     String title;
     if (startPosition == null && endPosition == null) {
       title = 'tap to measure distance';
-    }
-    else if (startPosition != null && endPosition == null) {
+    } else if (startPosition != null && endPosition == null) {
       title = 'tap again set end position';
-    }
-    else {
+    } else {
       title = _calculateDistanceBetweenPoints(startPosition!, endPosition!);
     }
     // widget.onTitleChanged(title);
   }
 
-  ARKitNode createThickLine(vector.Vector3 from, vector.Vector3 to, double thickness, ARKitMaterial material) {
+  ARKitNode createThickLine(
+    vector.Vector3 from,
+    vector.Vector3 to,
+    double thickness,
+    ARKitMaterial material,
+  ) {
     final vector.Vector3 direction = to - from;
     final double distance = direction.length;
 
@@ -147,14 +143,19 @@ class _MeasurePageState extends State<MeasurePage> {
 
   // Helper function to calculate the transformation matrix to align a cylinder (which is vertical by default)
   // with the direction between two 3D points.
-  vector.Matrix4 _transformBetweenPoints(vector.Vector3 p1, vector.Vector3 p2, double distance) {
+  vector.Matrix4 _transformBetweenPoints(
+    vector.Vector3 p1,
+    vector.Vector3 p2,
+    double distance,
+  ) {
     final vector.Vector3 dir = (p2 - p1);
     final double len = dir.length;
     if (len <= 0.0) {
       return vector.Matrix4.identity();
     }
 
-    final vector.Vector3 y = (dir / len); // desired up direction for the cylinder
+    final vector.Vector3 y =
+        (dir / len); // desired up direction for the cylinder
 
     // Choose an arbitrary vector that's not parallel to y to build the orthonormal basis
     vector.Vector3 arbitrary = (y.x.abs() < 0.0001 && y.z.abs() < 0.0001)
@@ -207,28 +208,29 @@ class _MeasurePageState extends State<MeasurePage> {
       point.worldTransform.getColumn(3).z,
     );
     final material = ARKitMaterial(
-        lightingModelName: ARKitLightingModel.blinn,
-        diffuse: ARKitMaterialProperty.color(Colors.blue));
-    final sphere = ARKitSphere(
-      radius: 0.03,
-      materials: [material],
+      lightingModelName: ARKitLightingModel.blinn,
+      diffuse: ARKitMaterialProperty.color(Colors.blue),
     );
+    final sphere = ARKitSphere(radius: 0.03, materials: [material]);
     final name = uuid.v1();
-    final node = ARKitNode(
-      geometry: sphere,
-      position: position,
-      name: name,
-    );
+    final node = ARKitNode(geometry: sphere, position: position, name: name);
     nodes.add(node);
 
     if (startPosition != null) {
-      final distance = _calculateDistanceBetweenPoints(position, startPosition!);
+      final distance = _calculateDistanceBetweenPoints(
+        position,
+        startPosition!,
+      );
       final point = _getMiddleVector(position, startPosition!);
-      final thickLine = createThickLine(startPosition!, position, 0.01, material);
+      final thickLine = createThickLine(
+        startPosition!,
+        position,
+        0.01,
+        material,
+      );
       nodes.add(thickLine);
       setEndPosition(position);
-    }
-    else {
+    } else {
       setStartPosition(position);
     }
 
@@ -249,9 +251,7 @@ class _MeasurePageState extends State<MeasurePage> {
       text: text,
       extrusionDepth: 1,
       materials: [
-        ARKitMaterial(
-          diffuse: ARKitMaterialProperty.color(Colors.red),
-        )
+        ARKitMaterial(diffuse: ARKitMaterialProperty.color(Colors.red)),
       ],
     );
     const scale = 0.001;

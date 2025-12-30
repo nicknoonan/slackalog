@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 abstract class IAPIClient {
-  Future<Map<String, dynamic>> get(String path);
+  Future<dynamic> get(String path);
   Future<Map<String, dynamic>> post(String path, Map<String, dynamic> data);
   // Add other HTTP methods as needed (put, delete, etc.)
 }
@@ -22,19 +22,21 @@ class APIClient implements IAPIClient {
         queryParameters: queryParameters);
   }
 
-  Future<Map<String, dynamic>> get(String path) async {
+  @override
+  Future<dynamic> get(String path) async {
     final response = await _client.get(
       _getUrl(path),
       headers: defaultHeaders,
     );
 
     if (response.statusCode == 200) {
-      return jsonDecode(response.body) as Map<String, dynamic>;
+      return jsonDecode(response.body);
     } else {
       throw Exception('Failed to load data: ${response.statusCode}');
     }
   }
 
+  @override
   Future<Map<String, dynamic>> post(String path, Map<String, dynamic> data) async {
     final response = await _client.post(
       _getUrl(path),

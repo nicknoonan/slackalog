@@ -3,6 +3,7 @@ import 'package:slackalog/layout.dart';
 import 'package:slackalog/measurePage.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
+import 'package:slackalog/slackSetupPage.dart';
 import 'package:slackalog/slackSetupRepository.dart';
 
 final getIt = GetIt.instance;
@@ -21,9 +22,14 @@ void main() {
 
 void configureDependencies() {
   // Dependency injection setup can be added here
-  getIt.registerSingleton<IAPIClient>(APIClient(baseUrl: "https://localhost"));
+  getIt.registerSingleton<IAPIClient>(
+    APIClient(
+      baseUrl:
+          "https://raw.githubusercontent.com/nicknoonan/slackalog/refs/heads/main",
+    ),
+  );
   getIt.registerLazySingleton<ISlackSetupRepository>(
-    () => SlackSetupRepository(apiClient: getIt<IAPIClient>()),
+    () => ExampleSlackSetupRepository(apiClient: getIt<IAPIClient>()),
   );
 }
 
@@ -35,12 +41,11 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-
   @override
   Widget build(BuildContext context) {
     final List<NavItem> navItems = <NavItem>[
       NavItem(label: "ARTest", icon: Icons.camera, body: MeasurePage()),
-      NavItem(label: "home", icon: Icons.home, body: Text("not implemented")),
+      NavItem(label: "home", icon: Icons.home, body: SlackSetupPage()),
       NavItem(label: "map", icon: Icons.map, body: Text("not implemented")),
     ];
 

@@ -2,21 +2,10 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "flutter_application_1",
-            "request": "launch",
-            "type": "dart"
-        },
-        {
-            "name": "flutter_application_1 (profile mode)",
-            "request": "launch",
+            "name": "Flutter",
             "type": "dart",
-            "flutterMode": "profile"
-        },
-        {
-            "name": "flutter_application_1 (release mode)",
             "request": "launch",
-            "type": "dart",
-            "flutterMode": "release"
+            "program": "lib/main.dart"
         },
         {
             "name": "slackalog (Flutter iPhone (7) (wireless))",
