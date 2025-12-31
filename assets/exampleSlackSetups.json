@@ -1,0 +1,68 @@
+{
+  "list": [
+    {
+      "name": "Flat line setup",
+      "description": "Basic setup with BC blue slackline at dorethea dix park. Great for beginners and super easy to set up.",
+      "id": "6b1f7c3a-8f6a-4b2a-9c3e-1d5a8e2f7b10",
+      "length": "10",
+      "type": "flat webbing",
+      "difficulty": "Beginner"
+    },
+    {
+      "name": "Flat line setup",
+      "description": "15m flat webbing anchored between two trees with basic tree protection. Good for first-time setup and walking practice.",
+      "id": "c2a9b1d4-3e6f-4a2b-8d9f-0a1b2c3d4e5f",
+      "length": "15",
+      "type": "flat webbing",
+      "difficulty": "Beginner"
+    },
+    {
+      "name": "Lowline",
+      "description": "8m slightly tensioned lowline (low to the ground) using tubular webbing. Easier to fall onto grass; suitable for confidence building.",
+      "id": "e4f1a2b3-5c6d-4e7f-9a0b-1c2d3e4f5a6b",
+      "length": "8",
+      "type": "tubular webbing / lowline",
+      "difficulty": "Beginner/Intermediate"
+    },
+    {
+      "name": "Trickline",
+      "description": "12m trickline with medium tension for bounces and tricks; requires reliable ratchets and slackline-specific webbing. Intermediate setup: practice dynamic moves.",
+      "id": "ab12cd34-56ef-47ab-89cd-ef0123456789",
+      "length": "12",
+      "type": "trickline (dynamic)",
+      "difficulty": "Intermediate"
+    },
+    {
+      "name": "Classic",
+      "description": "25m flat webbing setup at moderate tension. Needs good tree protection and stronger anchors; perfect for longer walks and flow.",
+      "id": "9f8e7d6c-5b4a-41f0-8e7d-6c5b4a3f2e1d",
+      "length": "25",
+      "type": "flat webbing",
+      "difficulty": "Intermediate"
+    },
+    {
+      "name": "Longline",
+      "description": "50m longline that requires backup lines, redundant anchors, and pulley/tensioning systems. High tension and significant sag make rigging complex.",
+      "id": "123e4567-e89b-12d3-a456-426614174000",
+      "length": "50",
+      "type": "longline (backup & pulley)",
+      "difficulty": "Advanced"
+    },
+    {
+      "name": "Highline",
+      "description": "20m highline setup with full safety backup, leashes, and anchors. Requires experience with knotwork, anchors, and belay systems—advanced safety-critical rigging.",
+      "id": "f47ac10b-58cc-4372-a567-0e02b2c3d479",
+      "length": "20",
+      "type": "highline (with backup)",
+      "difficulty": "Advanced"
+    },
+    {
+      "name": "Gap line",
+      "description": "6m gap line between two short trees or platforms; moderate tension and precise anchor placement required for consistent bounce and safety.",
+      "id": "be9f3c4d-28a1-4b3e-9a7c-0b1c2d3e4f5a",
+      "length": "6",
+      "type": "gap / tensioned flat",
+      "difficulty": "Intermediate"
+    }
+  ]
+}

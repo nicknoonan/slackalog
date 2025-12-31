@@ -16,13 +16,13 @@ class HeroImage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Hero(
-      tag: slackSetup.ID,
+      tag: slackSetup.id,
       child: SizedBox(
         width: width,
         height: height,
         child: Placeholder(
           color: Colors.purple, // Customize the color
-          strokeWidth: 3.0, // Customize the line thickness
+          strokeWidth: 1.0, // Customize the line thickness
         ),
       ),
     );
@@ -36,7 +36,7 @@ class PreviewImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return HeroImage(slackSetup: slackSetup, width: 40, height: 40);
+    return HeroImage(slackSetup: slackSetup, width: 80, height: 80);
   }
 }
 
@@ -47,6 +47,6 @@ class FullSizeImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return HeroImage(slackSetup: slackSetup, width: 300, height: 300);
+    return HeroImage(slackSetup: slackSetup, width: double.infinity, height: 300);
   }
 }

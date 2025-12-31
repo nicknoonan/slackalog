@@ -20,7 +20,7 @@ class SlackSetupPage extends StatefulWidget {
 
 class _SlackSetupPageState extends State<SlackSetupPage> {
   final slackSetupRepository = getIt<ISlackSetupRepository>();
-  late Future<List<SlackSetupModel>> _slackSetupsFuture;
+  late Future<SlackSetupModelList> _slackSetupsFuture;
 
   @override
   void initState() {
@@ -48,19 +48,12 @@ class _SlackSetupPageState extends State<SlackSetupPage> {
         Padding(
           padding: EdgeInsetsGeometry.all(15),
           child: FloatingActionButton(
-            onPressed: () => _gotoUpsertPage(context),
+            onPressed: () => _gotoUpsertPage(),
             child: Icon(Icons.add),
           ),
         ),
       ],
     );
-  }
-
-  Future<void> _editSlackSetup(SlackSetupModel slackSetup) async {
-    await slackSetupRepository.upsertSlackSetup(slackSetup);
-    setState(() {
-      _slackSetupsFuture = slackSetupRepository.getSlackSetups();
-    });
   }
 
   Future<void> _deleteSlackSetup(SlackSetupModel slackSetup) async {
@@ -76,18 +69,25 @@ class _SlackSetupPageState extends State<SlackSetupPage> {
         builder: (BuildContext context) => SlackSetupDetailsPage(
           slackSetup: slackSetup,
           onDelete: _deleteSlackSetup,
-          onEdit: _editSlackSetup,
         ),
       ),
     );
   }
 
-  void _gotoUpsertPage(BuildContext context) {
-    Navigator.of(context).push(
-      MaterialPageRoute<void>(
+  Future<void> _gotoUpsertPage() async {
+    SlackSetupModel? model = await Navigator.of(context).push<SlackSetupModel>(
+      MaterialPageRoute(
         builder: (BuildContext context) =>
-            SlackSetupUpsertPage(onSave: () async {}),
+            SlackSetupUpsertPage(title: 'CREATE'),
       ),
     );
+
+    if (mounted && model != null) {
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (BuildContext context) => SlackSetupDetailsPage(slackSetup: model, onDelete: _deleteSlackSetup)
+        )
+      );
+    }
   }
 }

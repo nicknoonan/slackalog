@@ -17,16 +17,20 @@ class _SlackSetupDeleteAlertDialogState
   bool isLoading = false;
 
   Future<void> handlePressed() async {
-    setState(() {
-      isLoading = true;
-    });
+    if (mounted) {
+      setState(() {
+        isLoading = true;
+      });
+    }
 
     await widget.onPressed();
 
-    setState(() {
-      Navigator.of(context).pop(); // Dismiss dialog
-      Navigator.of(context).pop(); // Dismiss dialog
-    });
+    if (mounted) {
+      setState(() {
+        Navigator.of(context).pop(); // Dismiss dialog
+        Navigator.of(context).pop(); // Dismiss dialog
+      });
+    }
   }
 
   @override
@@ -38,8 +42,9 @@ class _SlackSetupDeleteAlertDialogState
       ),
       actions: <Widget>[
         TextButton(
-          onPressed: isLoading ? null : () =>
-              Navigator.of(context).pop(), // Dismiss and return false
+          onPressed: isLoading
+              ? null
+              : () => Navigator.of(context).pop(), // Dismiss and return false
           child: const Text('CANCEL'),
         ),
         LoadingIconButton(

@@ -37,7 +37,24 @@ class _MeasurePageState extends State<MeasurePage> {
             onARKitViewCreated: onARKitViewCreated,
           ),
           floatingActionButtons(nodeNameStack.isEmpty),
+          startPosition != null && endPosition != null
+              ? floatingSubmitButton()
+              : SizedBox(),
         ],
+      ),
+    );
+  }
+
+  Widget floatingSubmitButton() {
+    final distance = startPosition!.distanceTo(endPosition!);
+
+    return Center(
+      child: ElevatedButton.icon(
+        onPressed: () {
+          Navigator.of(context).pop<int>(distance.toInt());
+        },
+        label: Text(distance.toStringAsFixed(2)),
+        icon: Icon(Icons.arrow_back_ios_sharp),
       ),
     );
   }

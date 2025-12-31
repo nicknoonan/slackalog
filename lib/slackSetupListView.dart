@@ -7,7 +7,7 @@ import 'package:slackalog/slackSetupRepository.dart';
 import 'package:slackalog/slackSetupPage.dart';
 
 class SlackSetupListView extends StatefulWidget {
-  final Future<List<SlackSetupModel>> slackSetups;
+  final Future<SlackSetupModelList> slackSetups;
   final GoToSlackSetupCallback onGoToDetails;
 
   const SlackSetupListView({
@@ -21,7 +21,6 @@ class SlackSetupListView extends StatefulWidget {
 }
 
 class _SlackSetupListViewState extends State<SlackSetupListView> {
-
   @override
   void initState() {
     super.initState();
@@ -34,19 +33,25 @@ class _SlackSetupListViewState extends State<SlackSetupListView> {
         List<Widget> children;
         if (slackSetupSnap.hasData) {
           children = <Widget>[
-            Expanded(
-              child: ListView.builder(
-                itemCount: slackSetupSnap.data!.length,
-                itemBuilder: (context, index) {
-                  SlackSetupModel slackSetup = slackSetupSnap.data![index];
-                  return SlackSetupCard(
-                    slackSetup: slackSetup,
-                    onTap: () { 
-                      widget.onGoToDetails(context, slackSetup); 
+            ListenableBuilder(
+              listenable: slackSetupSnap.data!,
+              builder: (BuildContext context, Widget? child) {
+                return Expanded(
+                  child: ListView.builder(
+                    itemCount: slackSetupSnap.data!.list.length,
+                    itemBuilder: (context, index) {
+                      SlackSetupModel slackSetup =
+                          slackSetupSnap.data!.list[index];
+                      return SlackSetupCard(
+                        slackSetup: slackSetup,
+                        onTap: () {
+                          widget.onGoToDetails(context, slackSetup);
+                        },
+                      );
                     },
-                  );
-                },
-              ),
+                  ),
+                );
+              },
             ),
           ];
         } else if (slackSetupSnap.hasError) {

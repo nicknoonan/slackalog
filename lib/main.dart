@@ -3,6 +3,7 @@ import 'package:slackalog/layout.dart';
 import 'package:slackalog/measurePage.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
+import 'package:slackalog/slackSetupModel.dart';
 import 'package:slackalog/slackSetupPage.dart';
 import 'package:slackalog/slackSetupRepository.dart';
 
@@ -28,9 +29,13 @@ void configureDependencies() {
           "https://raw.githubusercontent.com/nicknoonan/slackalog/refs/heads/main",
     ),
   );
+  // getIt.registerLazySingleton<ISlackSetupRepository>(
+  //   () => ExampleSlackSetupRepository(apiClient: getIt<IAPIClient>()),
+  // );
   getIt.registerLazySingleton<ISlackSetupRepository>(
-    () => ExampleSlackSetupRepository(apiClient: getIt<IAPIClient>()),
+    () => FileStoreSlackSetupRepository(),
   );
+  // getIt.registerLazySingleton<ISlackSetupModelList>(() => SlackSetupModelList(list: list))
 }
 
 class MyApp extends StatefulWidget {
@@ -44,7 +49,7 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     final List<NavItem> navItems = <NavItem>[
-      NavItem(label: "ARTest", icon: Icons.camera, body: MeasurePage()),
+      // NavItem(label: "ARTest", icon: Icons.camera, body: MeasurePage()),
       NavItem(label: "home", icon: Icons.home, body: SlackSetupPage()),
       NavItem(label: "map", icon: Icons.map, body: Text("not implemented")),
     ];

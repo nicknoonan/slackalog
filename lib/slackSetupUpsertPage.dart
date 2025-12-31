@@ -4,36 +4,69 @@ import 'package:flutter/services.dart';
 import 'package:slackalog/measurePage.dart';
 import 'package:slackalog/slackSetupModel.dart';
 import 'package:slackalog/slackSetupTextField.dart';
+import 'package:slackalog/main.dart';
+import 'package:uuid/uuid.dart';
+import 'slackSetupRepository.dart';
 
 class SlackSetupUpsertPage extends StatefulWidget {
-  final SlackSetupModel? slackSetup;
-  final AsyncCallback onSave;
+  SlackSetupModel? slackSetup;
+  final String title;
 
-  const SlackSetupUpsertPage({
-    super.key,
-    this.slackSetup,
-    required this.onSave,
-  });
+  SlackSetupUpsertPage({super.key, this.slackSetup, required this.title});
 
   @override
   State<SlackSetupUpsertPage> createState() => _SlackSetupUpsertPageState();
 }
 
 class _SlackSetupUpsertPageState extends State<SlackSetupUpsertPage> {
+  final slackSetupRepository = getIt<ISlackSetupRepository>();
+  bool isLoading = false;
+  TextEditingController nameController = TextEditingController();
+  final TextEditingController descriptionController = TextEditingController();
+  final TextEditingController lengthController = TextEditingController();
+
+  Future<void> handlePressed() async {
+    var updatedModel = SlackSetupModel( 
+      name: nameController.text,
+      description: descriptionController.text,
+      id: widget.slackSetup?.id ?? Uuid().v1obj(),
+      length: lengthController.text,
+    );
+
+    if (widget.slackSetup != null) {
+      widget.slackSetup!.update(updatedModel);
+    } else {
+      widget.slackSetup = updatedModel;
+    }
+
+    if (mounted) {
+      setState(() {
+        isLoading = true;
+      });
+    }
+
+    await slackSetupRepository.upsertSlackSetup(updatedModel);
+
+    if (mounted) {
+      setState(() {
+        if (Navigator.of(context).canPop()) {
+          Navigator.of(context).pop<SlackSetupModel>(updatedModel);
+        }
+        else { 
+          isLoading = false;
+        }
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    final TextEditingController nameController = TextEditingController(
-      text: widget.slackSetup?.name ?? '',
-    );
-    final TextEditingController descriptionController = TextEditingController(
-      text: widget.slackSetup?.description ?? '',
-    );
-    final TextEditingController lengthController = TextEditingController(
-      text: widget.slackSetup?.length.toString() ?? '',
-    );
-    String title = widget.slackSetup == null ? 'Create' : 'Update';
+    nameController.text = widget.slackSetup?.name ?? '';
+    descriptionController.text = widget.slackSetup?.description ?? '';
+    lengthController.text = widget.slackSetup?.length.toString() ?? '';
+
     return Scaffold(
-      appBar: AppBar(title: Text(title)),
+      appBar: AppBar(title: Text(widget.title)),
       body: Center(
         child: Stack(
           children: [
@@ -42,12 +75,7 @@ class _SlackSetupUpsertPageState extends State<SlackSetupUpsertPage> {
               descriptionController: descriptionController,
               lengthController: lengthController,
             ),
-            Positioned(
-              bottom: 0,
-              left: 0,
-              right: 0,
-              child: SaveButton(onPressed: () {}),
-            ),
+            SaveButton(onPressed: handlePressed, isLoading: isLoading),
           ],
         ),
       ),
@@ -99,20 +127,44 @@ class FormInputs extends StatelessWidget {
 
 class SaveButton extends StatelessWidget {
   final VoidCallback onPressed;
+  final bool isLoading;
 
-  const SaveButton({super.key, required this.onPressed});
+  const SaveButton({
+    super.key,
+    required this.onPressed,
+    required this.isLoading,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 70,
-      width: double.infinity,
-      child: FilledButton(
-        onPressed: onPressed,
-        style: FilledButton.styleFrom(
-          shape: const RoundedRectangleBorder(borderRadius: BorderRadius.zero),
+    return Positioned(
+      bottom: 0,
+      left: 0,
+      right: 0,
+      child: SizedBox(
+        height: 100,
+        width: double.infinity,
+        child: FilledButton(
+          onPressed: onPressed,
+          style: FilledButton.styleFrom(
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.zero,
+            ),
+          ),
+          child: Align(
+            // Alignment(x, y) where y = -1.0 is top, 0.0 is center, 1.0 is bottom.
+            // -0.5 positions the center of the Text widget at the top 50% of the button.
+            alignment: Alignment(0.0, -0.4),
+            child: isLoading
+                ? Container(
+                    width: 24, // Adjust size as needed
+                    height: 24, // Adjust size as needed
+                    padding: const EdgeInsets.all(2.0),
+                    child: const CircularProgressIndicator(strokeWidth: 3),
+                  )
+                : Text('SAVE'),
+          ),
         ),
-        child: Text('Save'),
       ),
     );
   }
@@ -137,13 +189,14 @@ class LengthInput extends StatelessWidget {
           top: 0,
           right: 0,
           child: IconButton(
-            iconSize: 20,
-            onPressed: () {
-              Navigator.of(context).push(
-                MaterialPageRoute<void>(
+            iconSize: 30,
+            onPressed: () async {
+              var length = await Navigator.of(context).push<int>(
+                MaterialPageRoute(
                   builder: (BuildContext context) => MeasurePage(),
                 ),
               );
+              lengthController.text = length.toString();
             },
             icon: Icon(Icons.camera_enhance),
           ),

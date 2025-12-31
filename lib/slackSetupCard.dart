@@ -10,29 +10,55 @@ class SlackSetupCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Card(
-        child: InkWell(
-          onTap: onTap,
-          child: Padding(
-            padding: EdgeInsets.all(5.0),
-            child: Row(
-              spacing: 5.0,
-              children: [
-                PreviewImage(slackSetup: slackSetup),
-                Expanded(
-                  child: Column(
-                    children: [
-                      Text(slackSetup.name),
-                      Text(slackSetup.description),
-                    ],
-                  ),
+    return ListenableBuilder(
+      listenable: slackSetup,
+      builder: (BuildContext context, Widget? child) {
+        return Center(
+          child: Card(
+            child: InkWell(
+              onTap: onTap,
+              child: Padding(
+                padding: EdgeInsets.all(5.0),
+                child: Row(
+                  spacing: 5.0,
+                  children: [
+                    PreviewImage(slackSetup: slackSetup),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            slackSetup.name,
+                            style: Theme.of(context).textTheme.headlineSmall,
+                          ),
+                          Text("${slackSetup.length}m"),
+                          Row(
+                            children: [
+                              Icon(Icons.rocket),
+                              Icon(Icons.rocket),
+                              Icon(Icons.rocket),
+                            ],
+                            spacing: 10,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
-              ],
+              ),
             ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
+}
+
+String first(String s, int num) {
+  if (s.length <= num) {
+    return s;
+  }
+
+  var index = num - 1;
+  return s.substring(0, index);
 }
