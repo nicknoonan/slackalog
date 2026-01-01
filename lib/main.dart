@@ -6,6 +6,7 @@ import 'package:get_it/get_it.dart';
 import 'package:slackalog/slackSetupModel.dart';
 import 'package:slackalog/slackSetupPage.dart';
 import 'package:slackalog/slackSetupRepository.dart';
+import 'package:image_picker/image_picker.dart';
 
 final getIt = GetIt.instance;
 
@@ -15,7 +16,7 @@ void main() {
     MaterialApp(
       home: MyApp(),
       theme: ThemeData.from(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepOrange),
       ),
     ),
   );
@@ -46,14 +47,27 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+  final ImagePicker picker = ImagePicker();
+
   @override
   Widget build(BuildContext context) {
+    // TODO: uses go_router. https://pub.dev/documentation/go_router/latest/topics/Get%20started-topic.html
     final List<NavItem> navItems = <NavItem>[
-      // NavItem(label: "ARTest", icon: Icons.camera, body: MeasurePage()),
       NavItem(label: "home", icon: Icons.home, body: SlackSetupPage()),
       NavItem(label: "map", icon: Icons.map, body: Text("not implemented")),
+      NavItem(label: "camera", icon: Icons.camera, body: testImagePicker()),
     ];
 
     return AppLayout(title: "Slackalog", navItems: navItems);
+  }
+
+  Widget testImagePicker() {
+    return Scaffold(
+      body: SizedBox(),
+      floatingActionButton: FloatingActionButton(onPressed: () async {
+        // Pick an image.
+        final List<XFile>? images = await picker.pickMultiImage();
+      }, child: Text("image"),),
+    );
   }
 }

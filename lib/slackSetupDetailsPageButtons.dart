@@ -12,20 +12,31 @@ class SlackSetupDetailsPageButtons extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FractionallySizedBox(
-      widthFactor: 0.8, // Sets the width to 80% of the available width
-      child: Card(
-        child: Padding(
-          padding: EdgeInsetsGeometry.all(3),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            spacing: 10,
-            children: [
-              IconButton.filled(onPressed: onEdit, icon: Icon(Icons.edit, size: 30)),
-              IconButton.filled(onPressed: onDelete , icon: Icon(Icons.delete, size: 30)),
-            ],
+    return Center(
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisSize: MainAxisSize.min, // This is key
+        children: <Widget>[
+          Card(
+            child: Padding(
+              padding: EdgeInsetsGeometry.fromLTRB(20, 3, 20, 3,),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                spacing: 10,
+                children: [
+                  IconButton.filled(
+                    onPressed: onEdit,
+                    icon: Icon(Icons.edit, size: 30),
+                  ),
+                  IconButton.filled(
+                    onPressed: onDelete,
+                    icon: Icon(Icons.delete, size: 30),
+                  ),
+                ],
+              ),
+            ),
           ),
-        ),
+        ],
       ),
     );
   }

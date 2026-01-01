@@ -57,20 +57,8 @@ class SlackSetupDetailsPage extends StatelessWidget {
                         slackSetup.name,
                         style: Theme.of(context).textTheme.headlineSmall,
                       ),
+                      Text('${slackSetup.length}m'),
                       Text(slackSetup.description),
-                      // Row(
-                      //   children: [
-                      //     IconButton.filled(
-                      //       onPressed: () =>
-                      //           _gotoUpsertPage(context, slackSetup),
-                      //       icon: Icon(Icons.edit),
-                      //     ),
-                      //     LoadingIconButton(
-                      //       onPressed: () => _confirmDelete(context),
-                      //       icon: Icon(Icons.delete),
-                      //     ),
-                      //   ],
-                      // ),
                     ],
                   ),
                   Positioned(

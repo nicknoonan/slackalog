@@ -36,7 +36,7 @@ class PreviewImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return HeroImage(slackSetup: slackSetup, width: 80, height: 80);
+    return HeroImage(slackSetup: slackSetup, width: 70, height: 80);
   }
 }
 
