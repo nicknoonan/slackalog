@@ -6,12 +6,14 @@ class SlackSetupModel with ChangeNotifier {
   String description;
   String length;
   UuidValue id;
+  List<String> imagePaths;
 
   SlackSetupModel({
     required this.name,
     required this.description,
     required this.id,
     required this.length,
+    this.imagePaths = const [],
   });
 
   void update(SlackSetupModel model) {
@@ -19,6 +21,7 @@ class SlackSetupModel with ChangeNotifier {
     description = model.description;
     length = model.length;
     id = model.id;
+    imagePaths = List<String>.from(model.imagePaths);
 
     notifyListeners();
   }
@@ -29,6 +32,9 @@ class SlackSetupModel with ChangeNotifier {
       description: json['description'],
       id: UuidValue.fromList((Uuid.parse(json['id']))),
       length: json['length'],
+      imagePaths: json['imagePaths'] != null
+          ? List<String>.from(json['imagePaths'])
+          : [],
     );
   }
 
@@ -37,6 +43,7 @@ class SlackSetupModel with ChangeNotifier {
     'description': description,
     'id': id.toString(),
     'length': length,
+    'imagePaths': imagePaths,
   };
 }
 

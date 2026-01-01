@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:slackalog/slackSetupListView.dart';
 import 'package:slackalog/main.dart';
-import 'package:slackalog/slackSetupCard.dart';
 import 'package:slackalog/slackSetupDetailsPage.dart';
 import 'package:slackalog/slackSetupModel.dart';
 import 'package:slackalog/slackSetupRepository.dart';

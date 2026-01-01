@@ -20,9 +20,9 @@ class SlackSetupCard extends StatelessWidget {
               child: Padding(
                 padding: EdgeInsets.all(5.0),
                 child: Row(
-                  spacing: 5.0,
                   children: [
                     PreviewImage(slackSetup: slackSetup),
+                    const SizedBox(width: 8),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -33,12 +33,13 @@ class SlackSetupCard extends StatelessWidget {
                           ),
                           Text("${slackSetup.length}m"),
                           Row(
-                            children: [
+                            children: const [
                               Icon(Icons.rocket),
+                              SizedBox(width: 10),
                               Icon(Icons.rocket),
+                              SizedBox(width: 10),
                               Icon(Icons.rocket),
                             ],
-                            spacing: 10,
                           ),
                         ],
                       ),

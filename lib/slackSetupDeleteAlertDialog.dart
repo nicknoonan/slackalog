@@ -1,6 +1,5 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:slackalog/slackSetupModel.dart';
 import 'package:slackalog/loadingIconButton.dart';
 
 class SlackSetupDeleteAlertDialog extends StatefulWidget {

@@ -7,7 +7,7 @@ class SlackSetupTextField extends StatelessWidget {
   final int? maxLength;
   final TextInputType? textInputType;
   final List<TextInputFormatter>? inputFormatters;
-  InputDecoration? decoration;
+  final InputDecoration decoration;
   final String? hintText;
 
   SlackSetupTextField({
@@ -21,21 +21,22 @@ class SlackSetupTextField extends StatelessWidget {
       border: OutlineInputBorder(),
       contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
     ),
-    this.hintText
+    this.hintText,
   });
 
   @override
   Widget build(BuildContext context) {
-    if (hintText != null) {
-      decoration = decoration!.copyWith(hintText: hintText);
-    }
+    final effectiveDecoration = hintText != null
+        ? decoration.copyWith(hintText: hintText)
+        : decoration;
+
     return TextField(
       controller: controller,
       maxLines: maxLines,
       maxLength: maxLength,
       keyboardType: textInputType,
       inputFormatters: inputFormatters,
-      decoration: decoration
+      decoration: effectiveDecoration,
     );
   }
 }

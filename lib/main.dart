@@ -1,9 +1,7 @@
 import 'package:slackalog/apiClient.dart';
 import 'package:slackalog/layout.dart';
-import 'package:slackalog/measurePage.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
-import 'package:slackalog/slackSetupModel.dart';
 import 'package:slackalog/slackSetupPage.dart';
 import 'package:slackalog/slackSetupRepository.dart';
 import 'package:image_picker/image_picker.dart';
@@ -55,7 +53,6 @@ class _MyAppState extends State<MyApp> {
     final List<NavItem> navItems = <NavItem>[
       NavItem(label: "home", icon: Icons.home, body: SlackSetupPage()),
       NavItem(label: "map", icon: Icons.map, body: Text("not implemented")),
-      NavItem(label: "camera", icon: Icons.camera, body: testImagePicker()),
     ];
 
     return AppLayout(title: "Slackalog", navItems: navItems);
@@ -66,7 +63,7 @@ class _MyAppState extends State<MyApp> {
       body: SizedBox(),
       floatingActionButton: FloatingActionButton(onPressed: () async {
         // Pick an image.
-        final List<XFile>? images = await picker.pickMultiImage();
+        await picker.pickMultiImage();
       }, child: Text("image"),),
     );
   }

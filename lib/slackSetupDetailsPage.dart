@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:slackalog/loadingIconButton.dart';
 import 'package:slackalog/slackSetupDeleteAlertDialog.dart';
 import 'package:slackalog/slackSetupDetailsPageButtons.dart';
-import 'package:slackalog/slackSetupImage.dart';
+import 'package:slackalog/slackSetupCarousel.dart';
 import 'package:slackalog/slackSetupModel.dart';
 import 'package:slackalog/slackSetupPage.dart';
 import 'package:slackalog/slackSetupUpsertPage.dart';
@@ -52,12 +51,29 @@ class SlackSetupDetailsPage extends StatelessWidget {
                 children: [
                   Column(
                     children: [
-                      FullSizeImage(slackSetup: slackSetup),
+                      // View-only carousel of setup images (tap any photo to open fullscreen)
+                      ImageCarousel(
+                        imagePaths: slackSetup.imagePaths,
+                        height: 300,
+                        heroTagPrefix: 'slack-${slackSetup.id}',
+                        onImageTap: (index) {
+                          if (index == null) return;
+                          Navigator.of(context).push(MaterialPageRoute(
+                            builder: (ctx) => ImageCarouselFullScreen(
+                              imagePaths: slackSetup.imagePaths,
+                              initialIndex: index,
+                              heroTagPrefix: 'slack-${slackSetup.id}',
+                            ),
+                          ));
+                        },
+                      ),
+                      const SizedBox(height: 12),
                       Text(
                         slackSetup.name,
                         style: Theme.of(context).textTheme.headlineSmall,
                       ),
                       Text('${slackSetup.length}m'),
+                      const SizedBox(height: 8),
                       Text(slackSetup.description),
                     ],
                   ),

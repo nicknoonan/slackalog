@@ -119,16 +119,14 @@ class _MeasurePageState extends State<MeasurePage> {
     }
   }
 
-  void setTitle() {
-    String title;
+  String setTitle() {
     if (startPosition == null && endPosition == null) {
-      title = 'tap to measure distance';
+      return 'tap to measure distance';
     } else if (startPosition != null && endPosition == null) {
-      title = 'tap again set end position';
+      return 'tap again set end position';
     } else {
-      title = _calculateDistanceBetweenPoints(startPosition!, endPosition!);
+      return _calculateDistanceBetweenPoints(startPosition!, endPosition!);
     }
-    // widget.onTitleChanged(title);
   }
 
   ARKitNode createThickLine(
@@ -234,11 +232,6 @@ class _MeasurePageState extends State<MeasurePage> {
     nodes.add(node);
 
     if (startPosition != null) {
-      final distance = _calculateDistanceBetweenPoints(
-        position,
-        startPosition!,
-      );
-      final point = _getMiddleVector(position, startPosition!);
       final thickLine = createThickLine(
         startPosition!,
         position,
