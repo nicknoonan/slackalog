@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
+import 'package:go_router/go_router.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:slackalog/main.dart';
 import 'package:slackalog/slackSetupRepository.dart';
 import 'package:slackalog/slackSetupModel.dart';
-import 'package:slackalog/slackSetupDetailsPage.dart';
+
 
 class MapPage extends StatefulWidget {
   final LatLng? initialCenter;
@@ -27,26 +28,51 @@ class _MapPageState extends State<MapPage> {
   @override
   void initState() {
     super.initState();
+    // Apply initial move (also covers first-time navigation into Map branch)
+    _applyInitialMove(widget.initialCenter, widget.initialZoom);
+  }
 
-    // If the page was given an initial center, move to it after the first frame
-    if (widget.initialCenter != null) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        Future.delayed(const Duration(milliseconds: 120), () {
-          try {
-            _mapController.move(widget.initialCenter!, widget.initialZoom ?? _initialZoom);
-          } catch (_) {}
-        });
-      });
-    } else {
-      // Ensure the default center is also applied to trigger tile fetch
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        Future.delayed(const Duration(milliseconds: 120), () {
-          try {
+  @override
+  void didUpdateWidget(covariant MapPage oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    // When the shell reuses this page instance between branches, updates will
+    // come through didUpdateWidget. If the incoming center or zoom changed,
+    // move the map controller to the new values.
+    // final oldCenter = oldWidget.initialCenter;
+    // final newCenter = widget.initialCenter;
+    // final oldZoom = oldWidget.initialZoom;
+    // final newZoom = widget.initialZoom;
+
+    // bool centerChanged = false;
+    // if (oldCenter == null && newCenter != null) centerChanged = true;
+    // if (oldCenter != null && newCenter != null) {
+    //   if (oldCenter.latitude != newCenter.latitude || oldCenter.longitude != newCenter.longitude) centerChanged = true;
+    // }
+
+    // final zoomChanged = (oldZoom != newZoom);
+
+    // if (centerChanged || zoomChanged) {
+    //   _applyInitialMove(newCenter, newZoom);
+    // }
+
+
+    _applyInitialMove(widget.initialCenter, widget.initialZoom);
+  }
+
+  void _applyInitialMove(LatLng? center, double? zoom) {
+    // Small delay helps ensure flutter_map internals are ready
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      // Future.delayed(const Duration(milliseconds: 120), () {
+        try {
+          if (center != null) {
+            _mapController.move(center, zoom ?? _initialZoom);
+          } else {
             _mapController.move(_initialCenter, _initialZoom);
-          } catch (_) {}
-        });
-      });
-    }
+          }
+        } catch (_) {}
+      // });
+    });
   }
 
   @override
@@ -57,8 +83,8 @@ class _MapPageState extends State<MapPage> {
         FlutterMap(
           mapController: _mapController,
           options: MapOptions(
-            initialCenter: _initialCenter,
-            initialZoom: _initialZoom,
+            initialCenter: widget.initialCenter ?? _initialCenter,
+            initialZoom: widget.initialZoom ?? _initialZoom,
           ),
           children: [
             TileLayer(
@@ -118,15 +144,7 @@ class _MapPageState extends State<MapPage> {
                                     const SizedBox(width: 8),
                                     ElevatedButton(
                                       onPressed: () {
-                                        Navigator.of(context).push(MaterialPageRoute(
-                                          builder: (ctx) => SlackSetupDetailsPage(
-                                            slackSetup: s,
-                                            onDelete: (sl) async {
-                                              await getIt<ISlackSetupRepository>().deleteSlackSetup(sl);
-                                              setState(() {});
-                                            },
-                                          ),
-                                        ));
+                                        context.go('/details/${s.id.uuid}');
                                       },
                                       child: const Text('Details'),
                                     ),
@@ -159,11 +177,6 @@ class _MapPageState extends State<MapPage> {
                   // Simple demo action: recenter map to initial center
                   _mapController.move(_initialCenter, _initialZoom);
                 },
-              ),
-              FloatingActionButton(
-                heroTag: null,
-                child: const Icon(Icons.add),
-                onPressed: () {},
               ),
             ],
           ),

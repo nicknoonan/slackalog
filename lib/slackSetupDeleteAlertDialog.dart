@@ -26,7 +26,7 @@ class _SlackSetupDeleteAlertDialogState
 
     if (mounted) {
       setState(() {
-        Navigator.of(context).pop(); // Dismiss dialog
+        isLoading = false;
         Navigator.of(context).pop(); // Dismiss dialog
       });
     }

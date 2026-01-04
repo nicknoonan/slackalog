@@ -4,10 +4,9 @@ import 'package:slackalog/slackSetupDetailsPageButtons.dart';
 import 'package:slackalog/slackSetupCarousel.dart';
 import 'package:slackalog/slackSetupModel.dart';
 import 'package:slackalog/slackSetupPage.dart';
-import 'package:slackalog/slackSetupUpsertPage.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
-import 'package:slackalog/map_page.dart';
+import 'package:go_router/go_router.dart';
 
 class SlackSetupDetailsPage extends StatelessWidget {
   final SlackSetupModel slackSetup;
@@ -32,12 +31,8 @@ class SlackSetupDetailsPage extends StatelessWidget {
   }
 
   void _gotoUpsertPage(BuildContext context, SlackSetupModel slackSetup) {
-    Navigator.of(context).push(
-      MaterialPageRoute<void>(
-        builder: (BuildContext context) =>
-            SlackSetupUpsertPage(slackSetup: slackSetup, title: 'UPDATE'),
-      ),
-    );
+    // Use go_router to push the upsert route for this id
+    context.push('/upsert/${slackSetup.id}');
   }
 
   @override
@@ -89,27 +84,15 @@ class SlackSetupDetailsPage extends StatelessWidget {
                             MapPreview(
                               lat: slackSetup.latitude!,
                               lon: slackSetup.longitude!,
-                            ),
-                            const SizedBox(height: 8),
-                            Align(
-                              alignment: Alignment.centerRight,
-                              child: TextButton.icon(
-                                icon: const Icon(Icons.open_in_new, size: 16),
-                                label: const Text('Open in Map'),
-                                onPressed: () {
-                                  Navigator.of(context).push(
-                                    MaterialPageRoute(
-                                      builder: (ctx) => MapPage(
-                                        initialCenter: LatLng(
-                                          slackSetup.latitude!,
-                                          slackSetup.longitude!,
-                                        ),
-                                        initialZoom: 17.0,
-                                      ),
-                                    ),
-                                  );
-                                },
-                              ),
+                              onPressed: () {
+                                // Navigate to the map route with query params to center the map
+                                // Use go() to replace the location so the ShellRoute's location matches
+                                context.go(
+                                  '/map?lat=${slackSetup.latitude}&lon=${slackSetup.longitude}&zoom=17.0',
+                                );
+
+                                
+                              },
                             ),
                           ],
                         ],
@@ -140,12 +123,14 @@ class MapPreview extends StatefulWidget {
   final double lat;
   final double lon;
   final double zoom;
+  final VoidCallback onPressed;
 
   const MapPreview({
     super.key,
     required this.lat,
     required this.lon,
     this.zoom = 16.0,
+    required this.onPressed,
   });
 
   @override
@@ -172,38 +157,48 @@ class _MapPreviewState extends State<MapPreview> {
   Widget build(BuildContext context) {
     return SizedBox(
       height: 350,
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(8),
-        child: AbsorbPointer(
-          // AbsorbPointer disables taps/pan/zoom making the map view read-only
-          child: FlutterMap(
-            mapController: _mapController,
-            options: MapOptions(),
-            children: [
-              TileLayer(
-                urlTemplate:
-                    'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-                subdomains: const ['a', 'b', 'c'],
-                userAgentPackageName: 'com.example.slackalog',
-                maxNativeZoom: 19,
-              ),
-              MarkerLayer(
-                markers: [
-                  Marker(
-                    point: LatLng(widget.lat, widget.lon),
-                    width: 40,
-                    height: 40,
-                    child: Icon(
-                      Icons.location_on,
-                      color: Theme.of(context).primaryColor,
-                      size: 28,
-                    ),
+      child: Stack(
+        alignment: AlignmentGeometry.topRight,
+        children: [
+          ClipRRect(
+            borderRadius: BorderRadius.circular(8),
+            child: AbsorbPointer(
+              // AbsorbPointer disables taps/pan/zoom making the map view read-only
+              child: FlutterMap(
+                mapController: _mapController,
+                options: MapOptions(),
+                children: [
+                  TileLayer(
+                    urlTemplate:
+                        'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+                    subdomains: const ['a', 'b', 'c'],
+                    userAgentPackageName: 'com.example.slackalog',
+                    maxNativeZoom: 19,
+                  ),
+                  MarkerLayer(
+                    markers: [
+                      Marker(
+                        point: LatLng(widget.lat, widget.lon),
+                        width: 40,
+                        height: 40,
+                        child: Icon(
+                          Icons.location_on,
+                          color: Theme.of(context).primaryColor,
+                          size: 28,
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),
-            ],
+            ),
           ),
-        ),
+          FilledButton.tonalIcon(
+            icon: const Icon(Icons.open_in_new, size: 16),
+            label: const Text('Open in Map'),
+            onPressed: widget.onPressed,
+          ),
+        ],
       ),
     );
   }

@@ -46,15 +46,6 @@ class PreviewImage extends StatelessWidget {
     if (slackSetup.imagePaths.isNotEmpty) {
       final storedPath = slackSetup.imagePaths.first;
       return GestureDetector(
-        // onTap: () {
-        //   Navigator.of(context).push(MaterialPageRoute(
-        //     builder: (ctx) => ImageCarouselFullScreen(
-        //       imagePaths: slackSetup.imagePaths,
-        //       initialIndex: 0,
-        //       heroTagPrefix: 'slack-${slackSetup.id}',
-        //     ),
-        //   ));
-        // },
         child: HeroImage(
           tag: 'slack-${slackSetup.id}-0',
           width: 70,

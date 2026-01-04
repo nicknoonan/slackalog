@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:slackalog/slackSetupListView.dart';
 import 'package:slackalog/main.dart';
-import 'package:slackalog/slackSetupDetailsPage.dart';
 import 'package:slackalog/slackSetupModel.dart';
 import 'package:slackalog/slackSetupRepository.dart';
-import 'package:slackalog/slackSetupUpsertPage.dart';
 
 typedef EditSlackSetupCallback = Future<void> Function(SlackSetupModel);
 typedef DeleteSlackSetupCallback = Future<void> Function(SlackSetupModel);
@@ -55,38 +54,18 @@ class _SlackSetupPageState extends State<SlackSetupPage> {
     );
   }
 
-  Future<void> _deleteSlackSetup(SlackSetupModel slackSetup) async {
-    await slackSetupRepository.deleteSlackSetup(slackSetup);
-    setState(() {
-      _slackSetupsFuture = slackSetupRepository.getSlackSetups();
-    });
-  }
 
   void _gotoDetailsPage(BuildContext context, SlackSetupModel slackSetup) {
-    Navigator.of(context).push(
-      MaterialPageRoute<void>(
-        builder: (BuildContext context) => SlackSetupDetailsPage(
-          slackSetup: slackSetup,
-          onDelete: _deleteSlackSetup,
-        ),
-      ),
-    );
+    // Use go_router to push a details page by id
+    context.push('/details/${slackSetup.id.uuid}');
   }
 
   Future<void> _gotoUpsertPage() async {
-    SlackSetupModel? model = await Navigator.of(context).push<SlackSetupModel>(
-      MaterialPageRoute(
-        builder: (BuildContext context) =>
-            SlackSetupUpsertPage(title: 'CREATE'),
-      ),
-    );
+    // Push the upsert route and await a potential SlackSetupModel result
+    final result = await context.push('/upsert');
 
-    if (mounted && model != null) {
-      Navigator.of(context).push(
-        MaterialPageRoute(
-          builder: (BuildContext context) => SlackSetupDetailsPage(slackSetup: model, onDelete: _deleteSlackSetup)
-        )
-      );
+    if (mounted && result != null && result is SlackSetupModel) {
+      context.push('/details/${result.id.uuid}');
     }
   }
 }

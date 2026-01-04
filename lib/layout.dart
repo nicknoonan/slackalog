@@ -1,57 +1,28 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
-class AppLayout extends StatefulWidget {
-  final List<NavItem> navItems;
+class AppShell extends StatelessWidget {
+  final StatefulNavigationShell navigationShell;
 
-  const AppLayout({super.key, required this.navItems});
-
-  @override
-  State<AppLayout> createState() => _AppLayoutState();
-}
-
-class _AppLayoutState extends State<AppLayout> {
-  int _selectedIndex = 0;
+  const AppShell({super.key, required this.navigationShell});
 
   @override
   Widget build(BuildContext context) {
-    var selected = widget.navItems.elementAt(_selectedIndex);
+    final selectedIndex = navigationShell.currentIndex;
+
     return Scaffold(
-      appBar: selected.title != null
-          ? AppBar(title: Text(selected.title!))
-          : null,
-      body: widget.navItems.elementAt(_selectedIndex).body,
+      // appBar: AppBar(title: const Text('Slackalog')),
+      body: navigationShell,
       bottomNavigationBar: BottomNavigationBar(
-        items: widget.navItems
-            .map(
-              (navItem) => BottomNavigationBarItem(
-                icon: Icon(navItem.icon),
-                label: navItem.label,
-              ),
-            )
-            .toList(),
-        currentIndex: _selectedIndex,
-        onTap: _onItemTapped,
+        currentIndex: selectedIndex,
+        items: const [
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
+          BottomNavigationBarItem(icon: Icon(Icons.map), label: 'Map'),
+        ],
+        onTap: (index) {
+          navigationShell.goBranch(index);
+        },
       ),
     );
   }
-
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-  }
-}
-
-class NavItem {
-  final String label;
-  final IconData icon;
-  final Widget body;
-  final String? title;
-
-  NavItem({
-    required this.label,
-    required this.icon,
-    required this.body,
-    this.title,
-  });
 }

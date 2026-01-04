@@ -96,7 +96,9 @@ class FileStoreSlackSetupRepository implements ISlackSetupRepository {
   @override
   Future<void> deleteSlackSetup(SlackSetupModel slackSetup) async {
     var slackSetupsList = await getSlackSetups();
-    slackSetupsList.list.removeWhere((element) => element.id == slackSetup.id);
+    slackSetupsList.list.removeWhere((element) => element.id.uuid == slackSetup.id.uuid);
+
+    // await Future.delayed(Duration(seconds: 2));
 
     await _writeSlackSetups(slackSetupsList);
     slackSetupsModel?.delete(slackSetup);
