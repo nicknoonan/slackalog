@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
 
-
-
 class AppLayout extends StatefulWidget {
-  final String title;
   final List<NavItem> navItems;
-  
-  const AppLayout({super.key, required this.title, required this.navItems});
+
+  const AppLayout({super.key, required this.navItems});
 
   @override
   State<AppLayout> createState() => _AppLayoutState();
@@ -17,8 +14,11 @@ class _AppLayoutState extends State<AppLayout> {
 
   @override
   Widget build(BuildContext context) {
+    var selected = widget.navItems.elementAt(_selectedIndex);
     return Scaffold(
-      appBar: AppBar(title: Text(widget.title)),
+      appBar: selected.title != null
+          ? AppBar(title: Text(selected.title!))
+          : null,
       body: widget.navItems.elementAt(_selectedIndex).body,
       bottomNavigationBar: BottomNavigationBar(
         items: widget.navItems
@@ -46,6 +46,12 @@ class NavItem {
   final String label;
   final IconData icon;
   final Widget body;
+  final String? title;
 
-  NavItem({required this.label, required this.icon, required this.body});
+  NavItem({
+    required this.label,
+    required this.icon,
+    required this.body,
+    this.title,
+  });
 }

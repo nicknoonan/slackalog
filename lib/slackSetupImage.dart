@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:slackalog/slackSetupModel.dart';
-import 'package:slackalog/slackSetupCarousel.dart';
 import 'package:slackalog/main.dart';
 import 'package:slackalog/slackSetupRepository.dart';
 

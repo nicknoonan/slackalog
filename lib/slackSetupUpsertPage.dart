@@ -55,6 +55,8 @@ class _SlackSetupUpsertPageState extends State<SlackSetupUpsertPage> {
       id: _setupId,
       length: lengthController.text,
       imagePaths: [], // populated after persisting files (relative)
+      latitude: widget.slackSetup?.latitude,
+      longitude: widget.slackSetup?.longitude
     );
 
     // Persist images via repository (returns relative paths)

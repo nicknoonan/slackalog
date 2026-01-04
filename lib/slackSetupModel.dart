@@ -8,12 +8,18 @@ class SlackSetupModel with ChangeNotifier {
   UuidValue id;
   List<String> imagePaths;
 
+  // Optional geolocation for map pins
+  double? latitude;
+  double? longitude;
+
   SlackSetupModel({
     required this.name,
     required this.description,
     required this.id,
     required this.length,
     this.imagePaths = const [],
+    this.latitude,
+    this.longitude,
   });
 
   void update(SlackSetupModel model) {
@@ -22,6 +28,8 @@ class SlackSetupModel with ChangeNotifier {
     length = model.length;
     id = model.id;
     imagePaths = List<String>.from(model.imagePaths);
+    latitude = model.latitude;
+    longitude = model.longitude;
 
     notifyListeners();
   }
@@ -35,6 +43,8 @@ class SlackSetupModel with ChangeNotifier {
       imagePaths: json['imagePaths'] != null
           ? List<String>.from(json['imagePaths'])
           : [],
+      latitude: json['latitude'] != null ? (json['latitude'] as num).toDouble() : null,
+      longitude: json['longitude'] != null ? (json['longitude'] as num).toDouble() : null,
     );
   }
 
@@ -44,6 +54,8 @@ class SlackSetupModel with ChangeNotifier {
     'id': id.toString(),
     'length': length,
     'imagePaths': imagePaths,
+    'latitude': latitude,
+    'longitude': longitude,
   };
 }
 

@@ -5,6 +5,7 @@ import 'package:get_it/get_it.dart';
 import 'package:slackalog/slackSetupPage.dart';
 import 'package:slackalog/slackSetupRepository.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:slackalog/map_page.dart';
 
 final getIt = GetIt.instance;
 
@@ -51,11 +52,11 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     // TODO: uses go_router. https://pub.dev/documentation/go_router/latest/topics/Get%20started-topic.html
     final List<NavItem> navItems = <NavItem>[
-      NavItem(label: "home", icon: Icons.home, body: SlackSetupPage()),
-      NavItem(label: "map", icon: Icons.map, body: Text("not implemented")),
+      NavItem(label: "home", icon: Icons.home, body: SlackSetupPage(), title: "Slackalog"),
+      NavItem(label: "map", icon: Icons.map, body: const MapPage()),
     ];
 
-    return AppLayout(title: "Slackalog", navItems: navItems);
+    return AppLayout(navItems: navItems);
   }
 
   Widget testImagePicker() {
