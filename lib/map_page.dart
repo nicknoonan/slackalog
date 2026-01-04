@@ -7,7 +7,10 @@ import 'package:slackalog/slackSetupModel.dart';
 import 'package:slackalog/slackSetupDetailsPage.dart';
 
 class MapPage extends StatefulWidget {
-  const MapPage({super.key});
+  final LatLng? initialCenter;
+  final double? initialZoom;
+
+  const MapPage({super.key, this.initialCenter, this.initialZoom});
 
   @override
   State<MapPage> createState() => _MapPageState();
@@ -24,6 +27,26 @@ class _MapPageState extends State<MapPage> {
   @override
   void initState() {
     super.initState();
+
+    // If the page was given an initial center, move to it after the first frame
+    if (widget.initialCenter != null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        Future.delayed(const Duration(milliseconds: 120), () {
+          try {
+            _mapController.move(widget.initialCenter!, widget.initialZoom ?? _initialZoom);
+          } catch (_) {}
+        });
+      });
+    } else {
+      // Ensure the default center is also applied to trigger tile fetch
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        Future.delayed(const Duration(milliseconds: 120), () {
+          try {
+            _mapController.move(_initialCenter, _initialZoom);
+          } catch (_) {}
+        });
+      });
+    }
   }
 
   @override
@@ -130,6 +153,7 @@ class _MapPageState extends State<MapPage> {
             spacing: 15,
             children: [
               FloatingActionButton(
+                heroTag: null,
                 child: const Icon(Icons.my_location),
                 onPressed: () {
                   // Simple demo action: recenter map to initial center
@@ -137,6 +161,7 @@ class _MapPageState extends State<MapPage> {
                 },
               ),
               FloatingActionButton(
+                heroTag: null,
                 child: const Icon(Icons.add),
                 onPressed: () {},
               ),

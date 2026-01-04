@@ -50,13 +50,13 @@ class FileStoreSlackSetupRepository implements ISlackSetupRepository {
       file = await file.writeAsString(jsonEncode(setupModelList));
     } 
     // uncomment if you want to reset on load
-    else {
-      var exampleJson = await rootBundle.loadString(
-        'assets/exampleSlackSetups.json',
-      );
-      SlackSetupModelList setupModelList = SlackSetupModelList.fromJson(jsonDecode(exampleJson));
-      file = await file.writeAsString(jsonEncode(setupModelList));
-    }
+    // else {
+    //   var exampleJson = await rootBundle.loadString(
+    //     'assets/exampleSlackSetups.json',
+    //   );
+    //   SlackSetupModelList setupModelList = SlackSetupModelList.fromJson(jsonDecode(exampleJson));
+    //   file = await file.writeAsString(jsonEncode(setupModelList));
+    // }
     return file;
   }
 
