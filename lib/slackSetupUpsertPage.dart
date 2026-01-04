@@ -7,10 +7,12 @@ import 'package:slackalog/measurePage.dart';
 import 'package:slackalog/slackSetupModel.dart';
 import 'package:slackalog/slackSetupTextField.dart';
 import 'package:slackalog/main.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:uuid/uuid.dart';
 import 'slackSetupRepository.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:slackalog/slackSetupLocationSelection.dart';
 
 class SlackSetupUpsertPage extends StatefulWidget {
   final SlackSetupModel? slackSetup;
@@ -30,6 +32,7 @@ class _SlackSetupUpsertPageState extends State<SlackSetupUpsertPage> {
   final TextEditingController lengthController = TextEditingController();
   final ImagePicker picker = ImagePicker();
   List<XFile> tmpImages = [];
+  LatLng? _selectedLocation;
   late final UuidValue _setupId;
 
   @override
@@ -39,6 +42,11 @@ class _SlackSetupUpsertPageState extends State<SlackSetupUpsertPage> {
     // Maintain a persistent id for this upsert page so repeated saves don't
     // create a new folder each time and duplicate images.
     _setupId = widget.slackSetup?.id ?? Uuid().v1obj();
+
+    // Initialize selected location from existing model (optional)
+    if (widget.slackSetup?.latitude != null && widget.slackSetup?.longitude != null) {
+      _selectedLocation = LatLng(widget.slackSetup!.latitude!, widget.slackSetup!.longitude!);
+    }
 
     // Load existing model image paths (they are stored relative to the
     // application documents directory). This resolves them to absolute paths
@@ -55,8 +63,8 @@ class _SlackSetupUpsertPageState extends State<SlackSetupUpsertPage> {
       id: _setupId,
       length: lengthController.text,
       imagePaths: [], // populated after persisting files (relative)
-      latitude: widget.slackSetup?.latitude,
-      longitude: widget.slackSetup?.longitude
+      latitude: _selectedLocation?.latitude ?? widget.slackSetup?.latitude,
+      longitude: _selectedLocation?.longitude ?? widget.slackSetup?.longitude,
     );
 
     // Persist images via repository (returns relative paths)
@@ -147,6 +155,21 @@ class _SlackSetupUpsertPageState extends State<SlackSetupUpsertPage> {
                   });
                 },
                 imageFiles: tmpImages.map((xfile) => File(xfile.path)).toList(),
+                location: _selectedLocation,
+                onEditLocation: () async {
+                  final result = await Navigator.of(context).push<LatLng>(
+                    MaterialPageRoute(
+                      fullscreenDialog: true,
+                      builder: (ctx) => SlackSetupLocationSelection(initialLocation: _selectedLocation),
+                    ),
+                  );
+                  if (result != null) {
+                    setState(() => _selectedLocation = result);
+                  }
+                },
+                onClearLocation: () {
+                  setState(() => _selectedLocation = null);
+                },
               ),
             ),
             SaveButton(onPressed: handleSave, isLoading: isLoading),
@@ -160,6 +183,9 @@ class _SlackSetupUpsertPageState extends State<SlackSetupUpsertPage> {
 typedef ImageDeleteCallback = void Function(int);
 typedef ImageAddCallback = void Function(String);
 
+typedef EditLocationCallback = Future<void> Function();
+typedef ClearLocationCallback = void Function();
+
 class FormInputs extends StatelessWidget {
   final TextEditingController nameController;
   final TextEditingController descriptionController;
@@ -167,6 +193,9 @@ class FormInputs extends StatelessWidget {
   final ImageDeleteCallback onDeleteImage;
   final AsyncCallback onAddImage;
   final List<File> imageFiles;
+  final LatLng? location;
+  final EditLocationCallback onEditLocation;
+  final ClearLocationCallback onClearLocation;
 
   const FormInputs({
     required this.nameController,
@@ -175,6 +204,9 @@ class FormInputs extends StatelessWidget {
     required this.onDeleteImage,
     required this.onAddImage,
     required this.imageFiles,
+    required this.location,
+    required this.onEditLocation,
+    required this.onClearLocation,
   });
 
   @override
@@ -204,6 +236,35 @@ class FormInputs extends StatelessWidget {
             onAdd: onAddImage,
             onDelete: onDeleteImage,
             imageFiles: imageFiles,
+          ),
+          const SizedBox(height: 12),
+          // Location picker (optional, last input)
+          Card(
+            elevation: 0,
+            color: Colors.grey.shade100,
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Text('Location (optional)', style: Theme.of(context).textTheme.titleMedium),
+                  const SizedBox(height: 8),
+                  if (location != null) ...[
+                    Text('Lat: ${location!.latitude.toStringAsFixed(6)}, Lon: ${location!.longitude.toStringAsFixed(6)}'),
+                    const SizedBox(height: 8),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        TextButton(onPressed: onEditLocation, child: const Text('Edit')),
+                        TextButton(onPressed: () => onClearLocation(), child: const Text('Remove')),
+                      ],
+                    ),
+                  ] else ...[
+                    FilledButton.tonal(onPressed: onEditLocation, child: const Text('Add location')),
+                  ]
+                ],
+              ),
+            ),
           ),
         ],
       ),
